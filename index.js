@@ -166,7 +166,61 @@ async function run(){
   
          
   
-         
+          app.get('/bookings', async (req, res) => {
+              const email = req.query.email;
+              // const decodedEmail = req.decoded.email;
+              // if( email !== decodedEmail){
+              //     return res.status(403).send({ message: 'forbidden access' });
+              // }
+              const query = { email: email };
+              const bookings= await bookingsCollection.find(query).toArray();
+              res.send(bookings);
+          })
+  
+          app.get('/bookings/:id', async (req, res) => {
+              const id = req.params.id;
+              const query = { _id: ObjectId(id) };
+              const booking = await bookingsCollection.findOne(query);
+              res.send(booking);
+          })
+  
+          
+          app.post('/bookings', async (req, res) => {
+              const booking = req.body;
+              console.log(booking);
+              const query = {
+                  bookingProduct: booking.product,
+                  email: booking.email,
+                 
+              }
+              const alreadyBooked = await bookingsCollection.find(query).toArray();
+  
+              if (alreadyBooked.length) {
+                  const message = `You already have a booking on ${booking. bookingProduct}`
+                  return res.send({ acknowledged: false, message })
+              }
+  
+       
+              const result = await bookingsCollection.insertOne(booking);
+              res.send(result);
+          });
+  
+          app.get('/users', verifyJWT, verifyAdmin, async (req, res) => {
+              const query = {};
+              const users = await usersCollection.find(query).toArray();
+              res.send(users);
+          })
+          app.post('/users', verifyJWT, verifyAdmin, async (req, res) => {
+              const user = req.body;
+              const result = await usersCollection.insertOne(user);
+              res.send(result);
+          });
+          app.delete('/users/:id', verifyJWT, verifyAdmin, async (req, res) => {
+              const id = req.params.id;
+              const filter = { _id: ObjectId(id) };
+              const result = await usersCollection.deleteOne(filter);
+              res.send(result);
+          })
           
   
     }
