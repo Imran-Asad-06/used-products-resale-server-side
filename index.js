@@ -91,6 +91,33 @@ async function run(){
           const category = await categoriesCollection.findOne(query);
           res.send(category);
           });
+          app.get('/products', async(req,res)=>{
+              const query = {}
+              const cursor = productCollection.find(query);
+              const categories = await cursor.toArray();
+              res.send(categories);
+          })
+          app.post('/products', async(req,res)=>{
+              const product = req.body;
+              const result = await productCollection.insertOne(product);
+              res.send(result);
+          })
+          app.get('/users', async (req, res) => {
+              const query = {};
+              const users = await usersCollection.find(query).toArray();
+              res.send(users);
+          });
+          app.get('/jwt', async (req, res) => {
+              const email = req.query.email;
+              const query = { email: email };
+              const user = await usersCollection.findOne(query);
+              if (user) {
+                  const token = jwt.sign({ email }, process.env.ACCESS_TOKEN)
+                  return res.send({ accessToken: token });
+              }
+              res.status(403).send({ accessToken: '' })
+          });
+      
           
           
   
