@@ -79,7 +79,20 @@ async function run(){
           next();
       }
   
-      
+      app.get('/categories', async(req,res)=>{
+          const query = {}
+          const cursor = categoriesCollection.find(query);
+          const categories = await cursor.toArray();
+          res.send(categories);
+      })
+      app.get('/categories/:id', async (req, res) => {
+          const id = req.params.id;
+          const query = { _id: ObjectId(id) };
+          const category = await categoriesCollection.findOne(query);
+          res.send(category);
+          });
+          
+          
   
     }
     finally{
