@@ -167,12 +167,8 @@ async function run(){
          
   
           app.get('/bookings', async (req, res) => {
-              const email = req.query.email;
-              // const decodedEmail = req.decoded.email;
-              // if( email !== decodedEmail){
-              //     return res.status(403).send({ message: 'forbidden access' });
-              // }
-              const query = { email: email };
+             
+              const query = {};
               const bookings= await bookingsCollection.find(query).toArray();
               res.send(bookings);
           })
@@ -193,12 +189,12 @@ async function run(){
                   email: booking.email,
                  
               }
-              const alreadyBooked = await bookingsCollection.find(query).toArray();
+            //   const alreadyBooked = await bookingsCollection.find(query).toArray();
   
-              if (alreadyBooked.length) {
-                  const message = `You already have a booking on ${booking. bookingProduct}`
-                  return res.send({ acknowledged: false, message })
-              }
+            //   if (alreadyBooked.length) {
+            //       const message = `You already have a booking on ${booking. bookingProduct}`
+            //       return res.send({ acknowledged: false, message })
+            //   }
   
        
               const result = await bookingsCollection.insertOne(booking);
